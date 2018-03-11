@@ -1,0 +1,195 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>source.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#include &lt;iostream&gt;
+#include "Problem.h"
+#include &lt;assert.h&gt;
+using namespace std;
+
+void testMultiMap()
+<span style = "background-color:#dfd">{
+	MultiMap* test1 = new MultiMap{};</span>
+	
+	int k;
+<span style = "background-color:#dfd">	TValue v;</span>
+
+<span style = "background-color:#dfd">	assert(test1-&gt;getLength() == 15);
+	assert(test1-&gt;size() == 0);
+	assert(test1-&gt;getFirstFree() == 0);</span>
+
+<span style = "background-color:#dfd">	IteratorMM* it = test1-&gt;iterator();</span>
+
+<span style = "background-color:#dfd">	assert(it-&gt;currentValue == -1);</span>
+
+<span style = "background-color:#dfd">	int nr = 0;
+	while (it-&gt;valid())</span>
+	{
+<span style = "background-color:#fdd">		it-&gt;element(k, v);
+		nr++;
+		it-&gt;next();
+	}</span>
+
+<span style = "background-color:#dfd">	assert(nr == 0);</span>
+
+<span style = "background-color:#dfd">	delete it;
+	delete test1;</span>
+
+<span style = "background-color:#dfd">	MultiMap* test = new MultiMap{ 13 };</span>
+	
+<span style = "background-color:#dfd">	assert(test-&gt;getLength() == 13);
+	assert(test-&gt;size() == 0);
+	assert(test-&gt;getFirstFree() == 0);</span>
+	
+<span style = "background-color:#dfd">	int keys[] = { 5, 18, 16, 15, 13, 31, 26 };</span>
+
+<span style = "background-color:#dfd">	for (int i = 0; i &lt; 7; i++)</span>
+	{
+<span style = "background-color:#dfd">		v = TValue{ i, i };
+		test-&gt;add(keys[i], v);
+		assert(test-&gt;size() == i + 1);
+	}</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;getAll()[5]-&gt;getKey() == 5);
+	assert(test-&gt;getNext()[5] == 0);
+	assert(test-&gt;getAll()[1]-&gt;getKey() == 13);
+	assert(test-&gt;getNext()[1] == 4);</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;getAll()[2]-&gt;getSize() == 1);
+	assert(test-&gt;getAll()[8]-&gt;getSize() == 0);
+	assert(test-&gt;getNext()[10] == -1);</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;getAll()[0]-&gt;getAllValues()[0].getX() == 1);
+	assert(test-&gt;getAll()[0]-&gt;getAllValues()[0].getY() == 1);</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;getAll()[4]-&gt;getAllValues()[0].getX() == 5);
+	assert(test-&gt;getAll()[4]-&gt;getAllValues()[0].getY() == 5);</span>
+
+<span style = "background-color:#dfd">	k = 5;
+	v = TValue{ 27, -93 };
+	test-&gt;add(k, v);</span>
+
+	
+<span style = "background-color:#dfd">	TValue result[10];
+	int l = 0;
+	test-&gt;search(5, result, l);
+	assert(l == 2);
+	assert(result[1] == v);</span>
+
+<span style = "background-color:#dfd">	l = 0;
+	test-&gt;search(13, result, l);
+	assert(l == 1);</span>
+
+<span style = "background-color:#dfd">	it = test-&gt;iterator();
+	nr = 0;</span>
+	
+<span style = "background-color:#dfd">	while (it-&gt;valid())</span>
+	{
+<span style = "background-color:#dfd">		it-&gt;element(k, v);
+		nr++;
+		it-&gt;next();
+	}</span>
+	
+<span style = "background-color:#dfd">	assert(nr == test-&gt;size());
+	delete it;</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;size() == 8);
+	assert(test-&gt;getAll()[5]-&gt;getSize() == 2);
+	assert(test-&gt;getAll()[5]-&gt;getAllValues()[1].getX() == 27);
+	assert(test-&gt;getAll()[5]-&gt;getAllValues()[1].getY() == -93);</span>
+
+<span style = "background-color:#dfd">	v = TValue{ 0,0 };
+	test-&gt;remove(5, v);
+	assert(test-&gt;size() == 7);
+	assert(test-&gt;getAll()[5]-&gt;getSize() == 1);</span>
+
+<span style = "background-color:#dfd">	try</span>
+	{
+<span style = "background-color:#dfd">		k = 0;
+		test-&gt;remove(k, v);</span>
+<span style = "background-color:#fdd">		assert(false);
+	}</span>
+	catch (...)
+	{
+		assert(true);
+<span style = "background-color:#dfd">	}</span>
+
+<span style = "background-color:#dfd">	try</span>
+	{
+<span style = "background-color:#dfd">		k = 5;
+		v = TValue{ 0, 0 };
+		test-&gt;remove(k, v);</span>
+<span style = "background-color:#fdd">		assert(false);
+	}</span>
+	catch (...)
+	{
+		assert(true);
+<span style = "background-color:#dfd">	}</span>
+
+<span style = "background-color:#dfd">	k = 5;
+	v = TValue{ 27, -93 };
+	test-&gt;remove(k, v);
+	assert(test-&gt;size() == 6);
+	assert(test-&gt;getAll()[0]-&gt;getKey() == 13);
+	assert(test-&gt;getNext()[0] == 4);</span>
+
+<span style = "background-color:#dfd">	it = test-&gt;iterator();</span>
+	
+<span style = "background-color:#dfd">	assert(it-&gt;currentKey == 0);
+	assert(it-&gt;currentValue == 0);</span>
+
+<span style = "background-color:#dfd">	nr = 0;
+	while (it-&gt;valid())</span>
+	{
+<span style = "background-color:#dfd">		it-&gt;element(k, v);
+		nr++;
+		it-&gt;next();
+	}</span>
+
+	
+<span style = "background-color:#dfd">	assert(nr = test-&gt;size());
+	delete it;</span>
+
+	
+<span style = "background-color:#dfd">	for (int i = 0; i &lt; 15; i++)</span>
+	{
+<span style = "background-color:#dfd">		v = TValue{ i, i };
+		test-&gt;add(i, v);
+	}</span>
+
+<span style = "background-color:#dfd">	k = 5;
+	for (int i = 0; i &lt; 15; i++)</span>
+	{
+<span style = "background-color:#dfd">		v = TValue{ i, i };
+		test-&gt;add(k, v);
+	}</span>
+
+<span style = "background-color:#dfd">	assert(test-&gt;getLength() == 26);</span>
+	
+
+<span style = "background-color:#dfd">	delete test;
+}</span>
+
+int main()
+<span style = "background-color:#dfd">{
+	testMultiMap();</span>
+	/*
+	MultiMap* mm = new MultiMap{ 13 };
+
+	Problem* pb = new Problem{ mm };
+
+	pb-&gt;start();
+
+	delete pb;
+	*/
+<span style = "background-color:#dfd">	return 0;
+}</span></pre>
+	</body>
+</html>

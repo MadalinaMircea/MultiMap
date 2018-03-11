@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>multimap.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#pragma once
+#include "TElement.h"
+
+class IteratorMM;
+
+class MultiMap
+{
+	TElement** elements;
+	int firstFree, length;
+	int* next;
+
+public:
+	MultiMap();
+	MultiMap(int l);
+	~MultiMap();
+
+<span style = "background-color:#dfd">	TElement** getAll() { return this-&gt;elements; }
+	int getFirstFree() { return this-&gt;firstFree; }
+	int getLength() { return this-&gt;length; }
+	int* getNext() { return this-&gt;next; }
+	int hash(int k) { return k % this-&gt;length; }</span>
+	int size();
+
+	void search(int k, TValue result[], int&amp; l);
+
+	void add(int&amp; k, TValue&amp; v);
+
+	void changeFirstFree();
+
+	IteratorMM* iterator();
+
+	void remove(int k, TValue v);
+
+	MultiMap* rehash(int l);
+};
+
+class IteratorMM
+{
+public:
+	MultiMap* mm;
+	int currentKey, currentValue;
+
+	IteratorMM(MultiMap* m);
+<span style = "background-color:#dfd">	~IteratorMM() {}</span>
+
+	void next();
+	void element(int&amp; k, TValue&amp; v);
+	bool valid();
+};
+</pre>
+	</body>
+</html>

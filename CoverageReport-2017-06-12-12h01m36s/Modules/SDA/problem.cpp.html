@@ -1,0 +1,192 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>problem.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#include "Problem.h"
+#include &lt;cstring&gt;
+
+<span style = "background-color:#fdd">Problem::Problem(MultiMap* m) : mm(m) {}</span>
+
+Problem::~Problem()
+<span style = "background-color:#fdd">{
+	delete this-&gt;mm;
+}</span>
+
+void Problem::readFunction()
+<span style = "background-color:#fdd">{</span>
+	char x[10];
+<span style = "background-color:#fdd">	cout &lt;&lt; "Give the degree of the function ( 0 &lt; degree &lt; 10 ): ";</span>
+
+<span style = "background-color:#fdd">	try</span>
+	{
+<span style = "background-color:#fdd">		cin &gt;&gt; x;
+		this-&gt;setDegree(atoi(x));
+		if (this-&gt;getDegree() &lt;= 0 || this-&gt;getDegree() &gt;= 10)
+			throw std::exception("Degree not valid.");
+	}</span>
+	catch(...)
+	{
+<span style = "background-color:#fdd">		throw std::exception("Degree not valid.");
+	}		</span>
+
+<span style = "background-color:#fdd">	for (int i = 0; i &lt;= this-&gt;getDegree(); i++)</span>
+	{
+<span style = "background-color:#fdd">		cout &lt;&lt; "Give the coefficient of x^" &lt;&lt; i &lt;&lt; " (integer): ";</span>
+
+<span style = "background-color:#fdd">		cin &gt;&gt; x;
+		this-&gt;setValue(atoi(x), i);
+	}
+}</span>
+
+void Problem::showFunction()
+<span style = "background-color:#fdd">{
+	cout &lt;&lt; "Your function is: \n";
+	cout &lt;&lt; this-&gt;getValues()[this-&gt;getDegree()] &lt;&lt; "*x^" &lt;&lt; this-&gt;getDegree();
+	for (int i = this-&gt;getDegree() - 1; i &gt;= 0; i--)</span>
+	{
+<span style = "background-color:#fdd">		if (this-&gt;getValues()[i] == 0)
+			continue;</span>
+
+<span style = "background-color:#fdd">		if (this-&gt;getValues()[i] &gt; 0)
+			cout &lt;&lt; " + ";
+		else
+			cout &lt;&lt; " ";
+		cout &lt;&lt; this-&gt;getValues()[i] &lt;&lt; "*x^" &lt;&lt; i;</span>
+		
+<span style = "background-color:#fdd">	}</span>
+
+<span style = "background-color:#fdd">	cout &lt;&lt; "\n\n";
+}</span>
+
+void Problem::readSet()
+<span style = "background-color:#fdd">{</span>
+	char x[10];
+<span style = "background-color:#fdd">	cout &lt;&lt; "Give the number of elements of the set ( 1 &lt; nr &lt; 10 ): ";</span>
+
+<span style = "background-color:#fdd">	try</span>
+	{
+<span style = "background-color:#fdd">		cin &gt;&gt; x;
+		this-&gt;setN(atoi(x));
+		if (this-&gt;getN() &lt;= 1 || this-&gt;getN() &gt;= 10)
+			throw std::exception("Number not valid.");
+	}</span>
+	catch (...)
+	{
+<span style = "background-color:#fdd">		throw std::exception("Number not valid.");
+	}</span>
+
+<span style = "background-color:#fdd">	int i = 0, j = 0;
+	while(i &lt; this-&gt;getN())</span>
+	{
+<span style = "background-color:#fdd">		cout &lt;&lt; "Element number " &lt;&lt; i &lt;&lt; ": ";</span>
+
+<span style = "background-color:#fdd">		cin &gt;&gt; x;
+		bool ok = true;
+		this-&gt;setSet(atoi(x), i);
+		for(j = 0; j &lt; i; j++)
+			if (this-&gt;getSet()[j] == this-&gt;getSet()[i])</span>
+			{
+<span style = "background-color:#fdd">				ok = false;
+				break;
+			}
+		if (ok == true)
+			i++;
+	}
+}</span>
+
+void Problem::showSet()
+<span style = "background-color:#fdd">{
+	cout &lt;&lt; "Your set is: ";</span>
+
+<span style = "background-color:#fdd">	for (int i = 0; i &lt; this-&gt;getN(); i++)
+		cout &lt;&lt; this-&gt;getSet()[i] &lt;&lt; " ";</span>
+
+<span style = "background-color:#fdd">	cout &lt;&lt; "\n\n";
+}</span>
+
+void Problem::start()
+<span style = "background-color:#fdd">{
+	try</span>
+	{
+<span style = "background-color:#fdd">		this-&gt;readFunction();
+	}</span>
+	catch (exception&amp; e)
+	{
+<span style = "background-color:#fdd">		cout &lt;&lt; e.what() &lt;&lt; '\n';
+		return;
+	}
+	this-&gt;showFunction();</span>
+
+<span style = "background-color:#fdd">	try</span>
+	{
+<span style = "background-color:#fdd">		this-&gt;readSet();
+	}</span>
+	catch (exception&amp; e)
+	{
+<span style = "background-color:#fdd">		cout &lt;&lt; e.what() &lt;&lt; '\n';
+		return;
+	}
+	this-&gt;showSet();</span>
+
+<span style = "background-color:#fdd">	this-&gt;compute();
+	this-&gt;showResult();
+}</span>
+
+int Problem::functionValue(int x)
+<span style = "background-color:#fdd">{
+	int p = 1, total = 0;
+	for (int i = 0; i &lt;= this-&gt;getDegree(); i++)</span>
+	{
+<span style = "background-color:#fdd">		total = total + p * this-&gt;getValues()[i];
+		p = p * x;
+	}</span>
+
+<span style = "background-color:#fdd">	return total;
+}</span>
+
+void Problem::compute()
+<span style = "background-color:#fdd">{</span>
+	int i, j, s;
+<span style = "background-color:#fdd">	TValue v;</span>
+
+<span style = "background-color:#fdd">	for (i = 0; i &lt; this-&gt;getN() - 1; i++)
+		for (j = i + 1; j &lt; this-&gt;getN(); j++)</span>
+		{
+<span style = "background-color:#fdd">			s = this-&gt;functionValue(this-&gt;getSet()[i]) + this-&gt;functionValue(this-&gt;getSet()[j]);
+			v = TValue{ this-&gt;getSet()[i], this-&gt;getSet()[j] };
+			this-&gt;mm-&gt;add(s, v);
+		}
+}</span>
+
+void Problem::showResult()
+<span style = "background-color:#fdd">{
+	bool ok = false;
+	for(int i = 0; i &lt; this-&gt;mm-&gt;getLength(); i++)
+		if (this-&gt;mm-&gt;getAll()[i]-&gt;getSize() &gt; 1)</span>
+		{
+<span style = "background-color:#fdd">			if(ok == false)
+				cout &lt;&lt; "The quadruplets (x, y, z, t) that satisfy f(x) + f(y) = f(z) + f(t) are: \n";</span>
+
+<span style = "background-color:#fdd">			for (int j = 0; j &lt; this-&gt;mm-&gt;getAll()[i]-&gt;getSize() - 1; j++)
+				for (int k = j + 1; k &lt; this-&gt;mm-&gt;getAll()[i]-&gt;getSize(); k++)
+					cout &lt;&lt; "f(" &lt;&lt; this-&gt;mm-&gt;getAll()[i]-&gt;getAllValues()[j].getX() &lt;&lt; ") + f(" &lt;&lt; \</span>
+					this-&gt;mm-&gt;getAll()[i]-&gt;getAllValues()[j].getY() &lt;&lt; ") = f(" &lt;&lt; \
+					this-&gt;mm-&gt;getAll()[i]-&gt;getAllValues()[k].getX() &lt;&lt; ") + f(" &lt;&lt; \
+					this-&gt;mm-&gt;getAll()[i]-&gt;getAllValues()[k].getY() &lt;&lt; ") = " &lt;&lt; \
+<span style = "background-color:#fdd">					this-&gt;mm-&gt;getAll()[i]-&gt;getKey() &lt;&lt; "\n";</span>
+
+<span style = "background-color:#fdd">			ok = true;
+		}</span>
+
+<span style = "background-color:#fdd">	if (ok == false)
+		cout &lt;&lt; "There are no quadruplets (x, y, z, t) that satisfy f(x) + f(y) = f(z) + f(t).\n";
+}</span></pre>
+	</body>
+</html>

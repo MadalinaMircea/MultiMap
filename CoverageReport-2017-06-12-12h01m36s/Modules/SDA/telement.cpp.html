@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>telement.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#include "TElement.h"
+
+<span style = "background-color:#dfd">TElement::TElement() : cap(0), len(0), key(0)
+{
+	this-&gt;values = new TValue[cap];
+}</span>
+
+<span style = "background-color:#dfd">TElement::TElement(int&amp; k, TValue&amp; e) : cap(10), len(0), key(k)
+{
+	this-&gt;values = new TValue[cap];
+	this-&gt;add(e);
+}</span>
+
+<span style = "background-color:#dfd">TElement::~TElement() {}</span>
+
+
+void TElement::add(TValue&amp; e)
+<span style = "background-color:#dfd">{
+	if (this-&gt;len == this-&gt;cap)
+		return;</span>
+
+<span style = "background-color:#dfd">	this-&gt;values[this-&gt;len] = e;
+	this-&gt;len = this-&gt;len + 1;
+}</span>
+
+void TElement::remove(int p)
+<span style = "background-color:#dfd">{
+	for (int i = p; i &lt; this-&gt;len - 1; i++)
+		this-&gt;values[i] = this-&gt;values[i + 1];</span>
+
+<span style = "background-color:#dfd">	this-&gt;len = this-&gt;len - 1;
+}</span>
+
+int TElement::getSize()
+<span style = "background-color:#dfd">{
+	return this-&gt;len;
+}</span>
+
+int TElement::getKey()
+<span style = "background-color:#dfd">{ 
+	return this-&gt;key;
+}</span>
+
+TValue* TElement::getAllValues()
+<span style = "background-color:#dfd">{
+	return this-&gt;values;
+}</span></pre>
+	</body>
+</html>

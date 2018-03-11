@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>problem.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#pragma once
+#include "MultiMap.h"
+
+class Problem
+{
+	MultiMap* mm;
+	int degree, values[10], n, set[10];
+
+public:
+	Problem(MultiMap* m);
+	Problem() {}
+	~Problem();
+
+	MultiMap* getMultimap() { return this-&gt;mm; }
+<span style = "background-color:#fdd">	int getDegree() { return this-&gt;degree; }
+	int* getValues() { return this-&gt;values; }
+	int getN() { return this-&gt;n; }
+	int* getSet() { return this-&gt;set; }
+	void setDegree(int d) { this-&gt;degree = d; }
+	void setN(int x) { this-&gt;n = x; }
+	void setValue(int x, int i) { this-&gt;values[i] = x; }
+	void setSet(int x, int i) { this-&gt;set[i] = x; }</span>
+	void start();
+	void readFunction();
+	void showFunction();
+	void readSet();
+	void showSet();
+	void compute();
+	void showResult();
+	int functionValue(int x);
+};</pre>
+	</body>
+</html>

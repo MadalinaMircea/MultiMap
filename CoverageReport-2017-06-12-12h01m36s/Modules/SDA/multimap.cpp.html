@@ -1,0 +1,263 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>multimap.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+#include "MultiMap.h"
+#include &lt;exception&gt;
+
+<span style = "background-color:#dfd">IteratorMM::IteratorMM(MultiMap* m) : mm(m)
+{
+	this-&gt;currentKey = 0;
+	while (this-&gt;currentKey &lt; this-&gt;mm-&gt;getLength() &amp;&amp; \</span>
+		this-&gt;mm-&gt;getAll()[this-&gt;currentKey]-&gt;getSize() == 0)
+<span style = "background-color:#dfd">		this-&gt;currentKey++;</span>
+
+<span style = "background-color:#dfd">	if (this-&gt;currentKey &lt; this-&gt;mm-&gt;getLength())
+		this-&gt;currentValue = 0;
+	else
+		this-&gt;currentValue = -1;
+}</span>
+
+void IteratorMM::next()
+<span style = "background-color:#dfd">{
+	if (this-&gt;currentValue &lt; this-&gt;mm-&gt;getAll()[this-&gt;currentKey]-&gt;getSize() - 1)
+		this-&gt;currentValue++;
+	else</span>
+	{
+<span style = "background-color:#dfd">		this-&gt;currentKey++;</span>
+
+<span style = "background-color:#dfd">		while (this-&gt;currentKey &lt; this-&gt;mm-&gt;getLength() &amp;&amp;\</span>
+			this-&gt;mm-&gt;getAll()[this-&gt;currentKey]-&gt;getSize() == 0)
+<span style = "background-color:#dfd">			this-&gt;currentKey++;</span>
+
+<span style = "background-color:#dfd">		if (this-&gt;currentKey &lt; this-&gt;mm-&gt;getLength())
+			this-&gt;currentValue = 0;
+		else
+			this-&gt;currentValue = -1;</span>
+	}
+<span style = "background-color:#dfd">}</span>
+
+void IteratorMM::element(int&amp; k, TValue&amp; v)
+<span style = "background-color:#dfd">{
+	k = this-&gt;mm-&gt;getAll()[this-&gt;currentKey]-&gt;getKey();
+	v = this-&gt;mm-&gt;getAll()[this-&gt;currentKey]-&gt;getAllValues()[this-&gt;currentValue];
+}</span>
+bool IteratorMM::valid()
+<span style = "background-color:#dfd">{
+	if (this-&gt;currentValue == -1)
+		return false;</span>
+
+<span style = "background-color:#dfd">	return true;
+}</span>
+
+<span style = "background-color:#dfd">MultiMap::MultiMap(int l) : length(l), firstFree(0)
+{
+	this-&gt;elements = new TElement*[length];
+	next = new int[length];
+	for (int i = 0; i &lt; length; i++)</span>
+	{
+<span style = "background-color:#dfd">		next[i] = -1;
+		this-&gt;elements[i] = new TElement;
+	}
+}</span>
+
+<span style = "background-color:#dfd">MultiMap::MultiMap() : length(15), firstFree(0)
+{
+	this-&gt;elements = new TElement*[length];
+	next = new int[length];
+	for (int i = 0; i &lt; length; i++)</span>
+	{
+<span style = "background-color:#dfd">		next[i] = -1;
+		this-&gt;elements[i] = new TElement;
+	}
+}</span>
+
+MultiMap::~MultiMap()
+<span style = "background-color:#dfd">{
+	for (int i = 0; i &lt; this-&gt;length; i++)
+		delete this-&gt;elements[i];
+}</span>
+
+int MultiMap::size()
+<span style = "background-color:#dfd">{
+	int total = 0;</span>
+
+<span style = "background-color:#dfd">	for (int i = 0; i &lt; this-&gt;length; i++)
+		total = total + this-&gt;elements[i]-&gt;getSize();</span>
+
+<span style = "background-color:#dfd">	return total;
+}</span>
+
+void MultiMap::changeFirstFree()
+<span style = "background-color:#dfd">{
+	while (this-&gt;firstFree != this-&gt;length &amp;&amp; this-&gt;elements[this-&gt;firstFree]-&gt;getSize() != 0)
+		this-&gt;firstFree++;
+}</span>
+
+void MultiMap::add(int&amp; k, TValue&amp; v)
+<span style = "background-color:#dfd">{
+	if (this-&gt;firstFree == this-&gt;length)</span>
+	{
+<span style = "background-color:#dfd">		*this = *this-&gt;rehash(this-&gt;length * 2);</span>
+	}
+
+<span style = "background-color:#dfd">	int pos = this-&gt;hash(k);
+	TElement* e = new TElement{ k, v };</span>
+	
+<span style = "background-color:#dfd">	if (this-&gt;elements[pos]-&gt;getSize() == 0)</span>
+	{
+<span style = "background-color:#dfd">		this-&gt;elements[pos] = e;
+		this-&gt;next[pos] = -1;</span>
+	}
+<span style = "background-color:#dfd">	else</span>
+	{
+<span style = "background-color:#dfd">		int current = pos;
+		while (this-&gt;next[current] != -1 &amp;&amp; this-&gt;elements[current]-&gt;getKey() != k)
+			current = this-&gt;next[current];</span>
+
+<span style = "background-color:#dfd">		if (this-&gt;elements[current]-&gt;getKey() == k)</span>
+		{
+<span style = "background-color:#dfd">			this-&gt;elements[current]-&gt;add(v);</span>
+		}
+<span style = "background-color:#dfd">		else</span>
+		{
+<span style = "background-color:#dfd">			this-&gt;elements[this-&gt;firstFree] = e;
+			this-&gt;next[current] = this-&gt;firstFree;</span>
+		}
+	}
+
+<span style = "background-color:#dfd">	this-&gt;changeFirstFree();
+}</span>
+
+IteratorMM* MultiMap::iterator()
+<span style = "background-color:#dfd">{
+	IteratorMM* it = new IteratorMM{ this };
+	return it;
+}</span>
+
+void MultiMap::search(int k, TValue result[], int&amp; l)
+<span style = "background-color:#dfd">{
+	int current = this-&gt;hash(k);
+	l = 0;</span>
+
+<span style = "background-color:#dfd">	while (this-&gt;elements[current]-&gt;getKey() != k &amp;&amp; this-&gt;next[current] != -1)
+		current = this-&gt;next[current];</span>
+
+<span style = "background-color:#dfd">	if (this-&gt;elements[current]-&gt;getKey() == k)</span>
+	{
+<span style = "background-color:#dfd">		for (int i = 0; i &lt; this-&gt;elements[current]-&gt;getSize(); i++)
+			result[i] = this-&gt;elements[current]-&gt;getAllValues()[i];
+		l = this-&gt;elements[current]-&gt;getSize();</span>
+	}
+<span style = "background-color:#dfd">}</span>
+
+void MultiMap::remove(int key, TValue v)
+<span style = "background-color:#dfd">{</span>
+	/*
+	int i = this-&gt;hash(k);
+	while (this-&gt;elements[i]-&gt;getKey() != k &amp;&amp; this-&gt;next[i] != -1)
+		i = this-&gt;next[i];
+
+	if (this-&gt;elements[i]-&gt;getKey() != k)
+		throw exception("Key not found.");
+	else
+	{
+		int j = 0;
+		for (j = 0; j &lt; this-&gt;elements[i]-&gt;getSize(); j++)
+			if (this-&gt;elements[i]-&gt;getAllValues()[j] == v)
+				break;
+
+		if (j == this-&gt;elements[i]-&gt;getSize())
+			throw exception("Value not found.");
+		else
+		{
+			this-&gt;elements[i]-&gt;remove(j);
+			*this = *this-&gt;rehash(this-&gt;length);
+		}
+	}
+	*/
+
+<span style = "background-color:#dfd">	int i = this-&gt;hash(key);
+	int j = -1, k = 0;
+	while (k &lt; this-&gt;length &amp;&amp; j == -1)</span>
+	{
+<span style = "background-color:#dfd">		if (next[k] == i)
+			j = k;
+		k++;
+	}</span>
+
+<span style = "background-color:#dfd">	while (i != -1 &amp;&amp; this-&gt;elements[i]-&gt;getKey() != key)</span>
+	{
+<span style = "background-color:#dfd">		j = i;
+		i = this-&gt;next[i];
+	}</span>
+
+<span style = "background-color:#dfd">	if (i == -1)
+		throw exception("Key not found.");</span>
+
+<span style = "background-color:#dfd">	for (j = 0; j &lt; this-&gt;elements[i]-&gt;getSize(); j++)
+		if (this-&gt;elements[i]-&gt;getAllValues()[j] == v)
+			break;</span>
+
+<span style = "background-color:#dfd">	if (j == this-&gt;elements[i]-&gt;getSize())
+		throw exception("Value not found.");</span>
+	
+<span style = "background-color:#dfd">	this-&gt;elements[i]-&gt;remove(j);</span>
+
+<span style = "background-color:#dfd">	if (this-&gt;elements[i]-&gt;getSize() == 0)</span>
+	{
+<span style = "background-color:#dfd">		bool over = false;</span>
+		do
+		{
+<span style = "background-color:#dfd">			int p = next[i];
+			int pp = i;
+			while (p != -1 &amp;&amp; this-&gt;hash(this-&gt;elements[p]-&gt;getKey()) != i)</span>
+			{
+<span style = "background-color:#dfd">				pp = p;
+				p = this-&gt;next[p];
+			}
+			if (p == -1)
+				over = true;
+			else</span>
+			{
+<span style = "background-color:#dfd">				this-&gt;elements[i] = this-&gt;elements[p];
+				j = pp;
+				i = p;</span>
+			}
+<span style = "background-color:#dfd">		} while (!over);
+		if (j != -1)
+			this-&gt;next[j] = this-&gt;next[i];
+		this-&gt;elements[i] = new TElement{};
+		this-&gt;next[i] = -1;
+		if (firstFree &gt; i)
+			firstFree = i;</span>
+	}
+<span style = "background-color:#dfd">}</span>
+
+MultiMap* MultiMap::rehash(int l)
+<span style = "background-color:#dfd">{
+	MultiMap* newMap = new MultiMap{ l };</span>
+
+<span style = "background-color:#dfd">	for (int i = 0; i &lt; this-&gt;length; i++)</span>
+	{
+<span style = "background-color:#dfd">		for (int j = 0; j &lt; this-&gt;elements[i]-&gt;getSize(); j++)</span>
+		{
+<span style = "background-color:#dfd">			int k = this-&gt;elements[i]-&gt;getKey();
+			TValue v = TValue{ this-&gt;elements[i]-&gt;getAllValues()[j].getX(), \</span>
+				this-&gt;elements[i]-&gt;getAllValues()[j].getY() };
+
+<span style = "background-color:#dfd">			newMap-&gt;add(k, v);
+		}
+	}</span>
+
+<span style = "background-color:#dfd">	return newMap;
+}</span></pre>
+	</body>
+</html>
